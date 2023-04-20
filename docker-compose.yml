@@ -1,0 +1,10 @@
+version: '1.0.0'
+
+services:
+  server:
+    build: .
+    ports:
+      - 1999:1999
+    restart: always
+    environment:
+      env_file: .env
