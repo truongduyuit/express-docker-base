@@ -1,6 +1,51 @@
 version: '1.0.0'
 
 services:
+  mongodb-primary:
+    container_name: mongodb-primary
+    image: mongo
+    ports:
+      - 28888:27017
+    volumes:
+      - ./mongodb/primary:/data/db
+      - ./mongodb/primary/keyfile:/etc/mongo-keyfile:ro
+    env_file:
+      - .env.mongodb
+    command: mongod --auth --replSet "rs0" --keyFile /etc/mongo-keyfile
+    restart: always
+    networks:
+      - server-network
+
+  mongodb-secondary-1:
+    container_name: mongodb-secondary-1
+    image: mongo
+    ports:
+      - 27018:27017
+    volumes:
+      - ./mongodb/secondary1:/data/db
+      - ./mongodb/secondary1/keyfile:/etc/mongo-keyfile:ro
+    env_file:
+      - .env.mongodb
+    command: mongod --auth --replSet "rs0" --keyFile /etc/mongo-keyfile
+    restart: always
+    networks:
+      - server-network
+
+  mongodb-secondary-2:
+    container_name: mongodb-secondary-2
+    image: mongo
+    ports:
+      - 27019:27017
+    volumes:
+      - ./mongodb/secondary2:/data/db
+      - ./mongodb/secondary2/keyfile:/etc/mongo-keyfile:ro
+    env_file:
+      - .env.mongodb
+    command: mongod --auth --replSet "rs0" --keyFile /etc/mongo-keyfile
+    restart: always
+    networks:
+      - server-network
+
   server:
     build: .
     ports:
@@ -8,3 +53,17 @@ services:
     restart: always
     environment:
       env_file: .env
+    depends_on:
+      - mongodb-primary
+      - mongodb-secondary-1
+      - mongodb-secondary-2
+    networks:
+      - server-network
+
+volumes:
+  mongodb-primary:
+  mongodb-secondary-1:
+  mongodb-secondary-2:
+networks:
+  server-network:
+    driver: bridge

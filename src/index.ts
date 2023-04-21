@@ -9,6 +9,7 @@ import { g_appENV } from './configs';
 import { g_errorCode } from './constants';
 import { injectRequestId, useMorgan } from './middlewares';
 import { CustomError, ErrorBuilder, ResponseBuilder } from './services';
+import { startMongoDb } from './services/mongodb';
 
 dotEnv.config();
 
@@ -21,6 +22,9 @@ app.use(injectRequestId);
 app.use(useMorgan(morgan));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+
+// start services
+startMongoDb();
 
 // routes
 app.get('/', (_: Request, res: Response) => {

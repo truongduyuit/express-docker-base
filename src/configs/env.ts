@@ -10,4 +10,8 @@ export const g_appENV = {
   fileLogLevel: process.env.LOG_LEVEL || g_logLevel.trace,
   logRes: process.env.LOG_RESPONSE_ENV || g_logENV.console,
   logError: process.env.LOG_ERROR_ENV || g_logENV.file,
+
+  mongodbUri: process.env.MONGO_CONNECTION_STRING || '',
+  mongoUser: process.env.MONGO_USER,
+  mongoPassword: process.env.MONGO_PASSWORD,
 };
